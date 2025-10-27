@@ -1,0 +1,129 @@
+default:
+  update_interval: 5
+  digits: 6
+
+parameters:
+  - group: PV
+    items:
+      - name: "Current Power"
+        device_class: power
+        state_class: measurement
+        unit_of_measurement: W
+        rule: 1
+        registers: [5795, 5794]   # 0x16A3, 0x16A2
+
+      - name: "PV1 Voltage"
+        device_class: voltage
+        state_class: measurement
+        unit_of_measurement: V
+        scale: 0.1
+        rule: 1
+        registers: [5776]         # 0x1690
+        icon: mdi:solar-power
+
+      - name: "PV1 Current"
+        device_class: current
+        state_class: measurement
+        unit_of_measurement: A
+        scale: 0.1
+        rule: 1
+        registers: [5777]         # 0x1691
+        icon: mdi:solar-power
+
+      - name: "Today Production"
+        device_class: energy
+        state_class: total_increasing
+        unit_of_measurement: kWh
+        scale: 0.01
+        rule: 3
+        registers: [5655, 5654]   # 0x1617, 0x1616
+        icon: mdi:solar-power
+
+      - name: "Total Production"
+        device_class: energy
+        state_class: total_increasing
+        unit_of_measurement: kWh
+        rule: 3
+        registers: [5715, 5714]   # 0x1653, 0x1652
+        scale: 0.01
+        icon: mdi:solar-power
+
+      - name: "Run Time"
+        state_class: total_increasing
+        unit_of_measurement: h
+        rule: 3
+        registers: [5651, 5650]   # 0x1613, 0x1612
+        scale: 0.0002777778
+        accuracy_decimals: 2
+
+      - name: "Generation Time"
+        state_class: total_increasing
+        unit_of_measurement: h
+        rule: 3
+        registers: [5653, 5652]   # 0x1615, 0x1614
+        scale: 0.0002777778
+        accuracy_decimals: 2
+
+  - group: Output
+    items:
+
+      - name: "Grid frequency"
+        device_class: frequency
+        state_class: measurement
+        unit_of_measurement: Hz
+        scale: 0.01
+        rule: 1
+        registers: [5792]         # 0x16A0
+        icon: mdi:home-lightning-bolt
+
+      - name: "L1 Voltage"
+        device_class: voltage
+        state_class: measurement
+        unit_of_measurement: V
+        scale: 0.1
+        rule: 1
+        registers: [5784]         # 0x1698
+        icon: mdi:home-lightning-bolt
+
+      - name: "L1 Current"
+        device_class: current
+        state_class: measurement
+        unit_of_measurement: A
+        scale: 0.1
+        rule: 1
+        registers: [5785]         # 0x1699
+        icon: mdi:home-lightning-bolt 
+
+      - name: "Power factor"
+        rule: 1
+        scale: 0.001
+        registers: [5793]         # 0x16A1
+
+  - group: Device
+    items:
+      - name: "Inverter bus voltage"
+        device_class: voltage
+        state_class: measurement
+        unit_of_measurement: V
+        scale: 0.1
+        rule: 1
+        registers: [5790]         # 0x169E
+        icon: mdi:home-lightning-bolt
+
+      - name: "Inverter bus current"
+        state_class: measurement
+        unit_of_measurement: A
+        scale: 0.1
+        rule: 1
+        registers: [5791]         # 0x169F
+        icon: mdi:home-lightning-bolt
+
+  - group: Info
+    items:
+      - name: "Device Serial Number"
+        rule: 5
+        registers: [4660, 4661, 4662, 4663, 4664, 4665]   # 0x1234 → 4660
+
+      - name: "FW Version"
+        rule: 7
+        registers: [4106]         # 0x100A
