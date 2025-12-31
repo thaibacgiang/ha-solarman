@@ -1,13 +1,8 @@
-# Power Master 6.0K-SL / Solarman OEM
-# Verified register range: 10 ~ 200
-# Protocol: Modbus RTU via Solarman
-# Function code: 0x03
-
 info:
   manufacturer: Power Master
   model: 6.0K-SL
-  protocol: solarman
   device_code: 3501
+  protocol: solarman
 
 default:
   update_interval: 10
@@ -16,13 +11,13 @@ default:
 
 parameters:
 
-# =======================
+# =====================
 # DEVICE
-# =======================
+# =====================
   - group: Device
     update_interval: 5
     items:
-      - name: "Inverter Status"
+      - name: Inverter Status
         class: enum
         rule: 1
         registers: [59]
@@ -40,151 +35,139 @@ parameters:
           - key: 5
             value: Discharging
 
-      - name: "Internal Temperature"
+      - name: Internal Temperature
         class: temperature
-        state_class: measurement
         uom: "°C"
         scale: 0.1
         rule: 1
         registers: [91]
 
-# =======================
-# AC GRID
-# =======================
-  - group: AC
+# =====================
+# GRID (AC)
+# =====================
+  - group: Grid
     update_interval: 5
     items:
-      - name: "Grid Voltage"
+      - name: Grid Voltage
         class: voltage
-        state_class: measurement
         uom: "V"
         scale: 0.1
         rule: 1
         registers: [67]
 
-      - name: "Grid Frequency"
+      - name: Grid Frequency
         class: frequency
-        state_class: measurement
         uom: "Hz"
         scale: 0.01
         rule: 1
         registers: [79]
 
-      - name: "Load Power"
+      - name: Grid Current
+        class: current
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [76]
+
+# =====================
+# LOAD
+# =====================
+  - group: Load
+    update_interval: 5
+    items:
+      - name: Load Power
         class: power
-        state_class: measurement
         uom: "W"
-        scale: 1
         rule: 2
         registers: [86, 87]
 
-# =======================
+# =====================
 # PV
-# =======================
+# =====================
   - group: PV
     update_interval: 5
     items:
-      - name: "PV Voltage"
+      - name: PV Voltage
         class: voltage
-        state_class: measurement
         uom: "V"
         scale: 0.1
         rule: 1
         registers: [109]
 
-      - name: "PV Current"
+      - name: PV Current
         class: current
-        state_class: measurement
         uom: "A"
         scale: 0.1
         rule: 1
         registers: [110]
 
-      - name: "PV Power"
+      - name: PV Power
         class: power
-        state_class: measurement
         uom: "W"
-        scale: 1
         rule: 2
         registers: [82, 83]
 
-# =======================
+# =====================
 # BATTERY
-# =======================
+# =====================
   - group: Battery
     update_interval: 5
     items:
-      - name: "Battery SOC"
+      - name: Battery SOC
         class: battery
-        state_class: measurement
         uom: "%"
         rule: 1
         registers: [184]
 
-      - name: "Battery Voltage"
+      - name: Battery Voltage
         class: voltage
-        state_class: measurement
         uom: "V"
         scale: 0.01
         rule: 1
         registers: [183]
 
-      - name: "Battery Current"
+      - name: Battery Current
         class: current
-        state_class: measurement
         uom: "A"
         scale: 0.01
         rule: 1
         registers: [191]
 
-      - name: "Battery Power"
+      - name: Battery Power
         class: power
-        state_class: measurement
         uom: "W"
-        rule: 1
-        registers: [190]
+        rule: 2
+        registers: [190, 191]
 
-# =======================
+# =====================
 # ENERGY
-# =======================
+# =====================
   - group: Energy
     update_interval: 30
     items:
-      - name: "Today PV Production"
+      - name: Today PV Production
         class: energy
-        state_class: total_increasing
         uom: "kWh"
         scale: 0.1
         rule: 1
         registers: [124]
 
-      - name: "Total PV Production"
+      - name: Total PV Production
         class: energy
-        state_class: total_increasing
         uom: "kWh"
         scale: 0.1
         rule: 2
         registers: [96, 97]
 
-      - name: "Today Load Consumption"
+      - name: Grid Import Today
         class: energy
-        state_class: total_increasing
-        uom: "kWh"
-        scale: 0.1
-        rule: 1
-        registers: [84]
-
-      - name: "Grid Import Today"
-        class: energy
-        state_class: total_increasing
         uom: "kWh"
         scale: 0.1
         rule: 1
         registers: [76]
 
-      - name: "Grid Export Today"
+      - name: Grid Export Today
         class: energy
-        state_class: total_increasing
         uom: "kWh"
         scale: 0.1
         rule: 1
