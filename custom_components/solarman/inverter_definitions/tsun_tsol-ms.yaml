@@ -10,3 +10,42 @@ default:
 parameters:
   - group: RAW
     items:
+      - name: RAW_10
+        rule: 1
+        registers: [10]
+
+      - name: RAW_11
+        rule: 1
+        registers: [11]
+
+      - name: RAW_12
+        rule: 1
+        registers: [12]
+
+      - name: RAW_13
+        rule: 1
+        registers: [13]
+
+      - name: RAW_14
+        rule: 1
+        registers: [14]
+
+      - name: RAW_15
+        rule: 1
+        registers: [15]
+
+      - name: RAW_16
+        rule: 1
+        registers: [16]
+
+      - name: RAW_17
+        rule: 1
+        registers: [17]
+
+      - name: RAW_18
+        rule: 1
+        registers: [18]
+
+      - name: RAW_19
+        rule: 1
+        registers: [19]
