@@ -1,8 +1,7 @@
 # Power Master / Hinen 6.0K-SL
 # Device Code: 3501
 # Solarman protocol lookup
-# Author: ChatGPT (custom for Do Thai)
-# Base: deye_hybrid (adjusted scale & registers)
+# Custom for Do Thai
 
 info:
   manufacturer: Power Master
@@ -18,123 +17,100 @@ default:
 
 parameters:
 
-  # =====================
-  # STATUS
-  # =====================
-  inverter_status:
-    name: Inverter Status
-    register: 73
-    scale: 1
-    unit: ""
-    icon: mdi:power
-    mapping:
-      0: Off
-      1: Standby
-      2: Starting
-      3: Running
+  # ================= GRID =================
+  - group: Grid
+    update_interval: 5
+    items:
+      - name: Grid Voltage
+        registers: [67]          # RAW_67 = 4600 → 460.0V
+        rule: 1
+        scale: 0.1
+        uom: V
+        device_class: voltage
+        state_class: measurement
 
-  work_mode:
-    name: Work Mode
-    register: 74
-    scale: 1
-    unit: ""
-    mapping:
-      0: Unknown
-      1: Grid
-      2: Battery
-      3: Hybrid
+      - name: Grid Frequency
+        registers: [89]          # RAW_89 = 5020 → 50.20Hz
+        rule: 1
+        scale: 0.01
+        uom: Hz
+        device_class: frequency
+        state_class: measurement
 
-  # =====================
-  # GRID / AC
-  # =====================
-  grid_frequency:
-    name: Grid Frequency
-    register: 89
-    scale: 0.01
-    unit: Hz
-    device_class: frequency
-    state_class: measurement
+  # ================= LOAD =================
+  - group: Load
+    update_interval: 5
+    items:
+      - name: Load Power
+        registers: [75]          # RAW_75 = 1000
+        rule: 1
+        uom: W
+        device_class: power
+        state_class: measurement
 
-  ac_output_power:
-    name: AC Output Power
-    register: 67
-    scale: 1
-    unit: W
-    device_class: power
-    state_class: measurement
+  # ================= BATTERY =================
+  - group: Battery
+    update_interval: 5
+    items:
+      - name: Battery SOC
+        registers: [96]          # RAW_96 = 100 (%)
+        rule: 1
+        uom: "%"
+        device_class: battery
+        state_class: measurement
 
-  load_power:
-    name: Load Power
-    register: 71
-    scale: 1
-    unit: W
-    device_class: power
-    state_class: measurement
+      - name: Battery Voltage
+        registers: [99]          # RAW_99 = 484 → 48.4V
+        rule: 1
+        scale: 0.1
+        uom: V
+        device_class: voltage
+        state_class: measurement
 
-  # =====================
-  # PV
-  # =====================
-  pv_power:
-    name: PV Power
-    register: 68
-    scale: 1
-    unit: W
-    device_class: power
-    state_class: measurement
+      - name: Battery Current
+        registers: [87]          # RAW_87 = 24 → 2.4A
+        rule: 1
+        scale: 0.1
+        uom: A
+        device_class: current
+        state_class: measurement
 
-  # =====================
-  # BATTERY
-  # =====================
-  battery_voltage:
-    name: Battery Voltage
-    register: 69
-    scale: 0.1
-    unit: V
-    device_class: voltage
-    state_class: measurement
+  # ================= PV =================
+  - group: PV
+    update_interval: 5
+    items:
+      - name: PV Voltage
+        registers: [101]         # RAW_101 = 2116 → 211.6V
+        rule: 1
+        scale: 0.1
+        uom: V
+        device_class: voltage
+        state_class: measurement
 
-  battery_current:
-    name: Battery Current
-    register: 107
-    scale: 0.1
-    unit: A
-    device_class: current
-    state_class: measurement
+      - name: PV Power
+        registers: [124]         # RAW_124 = 5888 → 588.8W
+        rule: 1
+        scale: 0.1
+        uom: W
+        device_class: power
+        state_class: measurement
 
-  battery_soc:
-    name: Battery SOC
-    register: 120
-    scale: 1
-    unit: "%"
-    device_class: battery
-    state_class: measurement
+  # ================= ENERGY =================
+  - group: Energy
+    update_interval: 30
+    items:
+      - name: Today PV Production
+        registers: [124]
+        rule: 1
+        scale: 0.1
+        uom: kWh
+        device_class: energy
+        state_class: total_increasing
 
-  # =====================
-  # TEMPERATURE
-  # =====================
-  inverter_temperature:
-    name: Inverter Temperature
-    register: 99
-    scale: 0.1
-    unit: °C
-    device_class: temperature
-    state_class: measurement
-
-  # =====================
-  # ENERGY
-  # =====================
-  daily_energy:
-    name: Daily Energy
-    register: 124
-    scale: 0.001
-    unit: kWh
-    device_class: energy
-    state_class: total_increasing
-
-  total_energy:
-    name: Total Energy
-    register: 123
-    scale: 0.001
-    unit: kWh
-    device_class: energy
-    state_class: total_increasing
+      - name: Total PV Production
+        registers: [123, 124]    # 32-bit
+        rule: uint32
+        scale: 0.001
+        uom: kWh
+        device_class: energy
+        state_class: total_increasing
