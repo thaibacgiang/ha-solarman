@@ -1,204 +1,431 @@
+# Hinen Inverter
 #
-# TSUN TSOL-MS300~800 | 2 MPPT | Microinverter
+# Reference: Modbus RTU Protocol Document
+# Tested with Hinen H5000-EU Single-Phase Hybrid Model Number: S05U01T00E0FP0500B0500
 #
-# Reference: https://github.com/davidrapan/ha-solarman/issues/153
-#
-# Tested with TSUN TSOL-MS800 (Serial: Y47E...) FW: LSW5BLE_17_02B0_1.08-D1
-#
+
+info:
+  manufacturer: Hinen
+  model: H5000
 
 default:
-  update_interval: 5
-  digits: 6
+  update_interval: 30
+  code: 0x03  # Sử dụng function code 0x03 để đọc thanh ghi
+  digits: 4
 
 parameters:
-  - group: PV
-    items:
-      - name: "PV1 Voltage"
-        class: "voltage"
-        mppt: 1
-        state_class: "measurement"
-        uom: "V"
-        scale: 0.1
-        rule: 1
-        registers: [0x3010]
-        icon: "mdi:solar-power"
-
-      - name: "PV1 Current"
-        class: "current"
-        mppt: 1
-        state_class: "measurement"
-        uom: "A"
-        scale: 0.01
-        rule: 1
-        registers: [0x3011]
-        icon: "mdi:solar-power"
-
-      - name: PV1 Power
-        class: "power"
-        mppt: 1
-        state_class: "measurement"
-        uom: "W"
-        rule: 1
-        scale: 0.1
-        registers: [0x3012]
-
-      - name: "PV2 Voltage"
-        class: "voltage"
-        mppt: 2
-        state_class: "measurement"
-        uom: "V"
-        scale: 0.1
-        rule: 1
-        registers: [0x3013]
-        icon: "mdi:solar-power"
-
-      - name: "PV2 Current"
-        class: "current"
-        mppt: 2
-        state_class: "measurement"
-        uom: "A"
-        scale: 0.01
-        rule: 1
-        registers: [0x3014]
-        icon: "mdi:solar-power"
-
-      - name: PV2 Power
-        class: "power"
-        mppt: 2
-        state_class: "measurement"
-        uom: "W"
-        rule: 1
-        scale: 0.1
-        registers: [0x3015]
-
-      - name: "Today Production"
-        friendly_name: Today's Production
-        alt: Daily Production
-        class: "energy"
-        state_class: "total_increasing"
-        uom: "kWh"
-        scale: 0.01
-        rule: 1
-        registers: [0x301c]
-        icon: "mdi:solar-power"
-        validation:
-          dev: 100
-          invalidate_all:
-
-      - name: "Today Production 1"
-        friendly_name: Today's Production 1
-        alt: Daily Production 1
-        class: "energy"
-        state_class: "total_increasing"
-        uom: "kWh"
-        scale: 0.1
-        rule: 1
-        registers: [0x301f]
-        icon: "mdi:solar-power"
-        validation:
-          dev: 100
-          invalidate_all:
-
-      - name: "Today Production 2"
-        friendly_name: Today's Production 2
-        alt: "Daily Production 2"
-        class: "energy"
-        state_class: "total_increasing"
-        uom: "kWh"
-        scale: 0.01
-        rule: 1
-        registers: [0x3022]
-        icon: "mdi:solar-power"
-        validation:
-          dev: 100
-          invalidate_all:
-
-      - name: "Total Production"
-        persistent:
-        class: "energy"
-        state_class: "total_increasing"
-        uom: "kWh"
-        scale: 0.01
-        rule: 1
-        registers: [0x301e]
-        icon: "mdi:solar-power"
-        validation:
-          min: 0.1
-          dev: 100
-          invalidate_all: 2
-
-  - group: Grid
-    items:
-      - name: "Grid Voltage"
-        class: "voltage"
-        state_class: "measurement"
-        uom: "V"
-        scale: 0.1
-        rule: 1
-        registers: [0x3009]
-        icon: "mdi:transmission-tower"
-
-      - name: "Grid Current"
-        class: "current"
-        state_class: "measurement"
-        uom: "A"
-        scale: 0.01
-        rule: 2
-        registers: [0x300a]
-        icon: "mdi:transmission-tower"
-
-      - name: "Grid Frequency"
-        class: "frequency"
-        state_class: "measurement"
-        uom: "Hz"
-        scale: 0.01
-        rule: 1
-        registers: [0x300b]
-        icon: "mdi:transmission-tower"
-
   - group: Device
+    update_interval: 5
     items:
       - name: "Device State"
         class: "enum"
         rule: 1
-        registers: [0x3000]
+        registers: [59]  # Address 059: run state
         icon: "mdi:state-machine"
-        range:
-          min: 0
-          max: 5
         lookup:
-          - key: 0x0000
-            value: "Standby"
-          - key: 0x0001
-            value: "Normal"
+          - key: 0
+            value: "Stand-by"
+          - key: 1
+            value: "Grid-connected"
+          - key: 2
+            value: "Off-grid"
+          - key: 3
+            value: "FAULT"
+          - key: 4
+            value: "Update mode"
+          - key: 5
+            value: "Charging"
+          - key: 6
+            value: "Discharging"
+          - key: 7
+            value: "Bypass"
 
       - name: "Temperature"
         class: "temperature"
+        state_class: "measurement"
         uom: "°C"
-        state_class: "measurement"
-        rule: 1
-        offset: 40
-        registers: [0x300c]
+        scale: 0.1
+        rule: 2
+        registers: [91]  # Address 091: IGBT temperature (Radiator temperature)
 
-      - name: "PV Max Power"
-        class: "power"
-        mppt: 1
-        state_class: "measurement"
-        uom: "W"
-        rule: 1
-        registers: [0x2007]
-
-      - name: "Rated Power"
-        class: "power"
-        state_class: "measurement"
-        uom: "W"
-        rule: 1
-        registers: [0x300e]
-
-      - name: "Output Power"
+  - group: PV
+    update_interval: 5
+    items:
+      - name: "PV Power"
         class: "power"
         state_class: "measurement"
         uom: "W"
         scale: 0.1
-        rule: 3
-        registers: [0x300f]
+        rule: 2
+        registers: [82, 83]  # Address 082-083: Input active power (low/high word)
+        icon: "mdi:solar-power-variant"
+
+      - name: PV1 Voltage
+        alt: DC1 Voltage
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.1
+        rule: 1
+        registers: [109]  # Address 109: Dc voltage 1
+        icon: "mdi:solar-power-variant"
+
+      - name: PV1 Current
+        alt: DC1 Current
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [110]  # Address 110: Dc current 1
+        icon: "mdi:solar-power-variant"
+
+      - name: PV1 Power
+        alt: DC1 Power
+        class: "power"
+        state_class: "measurement"
+        uom: "W"
+        rule: 1
+        registers: [186]  # Address 186: PV1 input power
+        icon: "mdi:solar-power-variant"
+
+      - name: PV2 Voltage
+        alt: DC2 Voltage
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.1
+        rule: 1
+        registers: [111]  # Address 111: Dc voltage 2
+        icon: "mdi:solar-power-variant"
+
+      - name: PV2 Current
+        alt: DC2 Current
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [112]  # Address 112: Dc current 2
+        icon: "mdi:solar-power-variant"
+
+      - name: PV2 Power
+        alt: DC2 Power
+        class: "power"
+        state_class: "measurement"
+        uom: "W"
+        rule: 1
+        registers: [187]  # Address 187: PV2 input power
+        icon: "mdi:solar-power-variant"
+
+      - name: PV3 Voltage
+        alt: DC3 Voltage
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.1
+        rule: 1
+        registers: [113]  # Address 113: Dc voltage 3
+        icon: "mdi:solar-power-variant"
+
+      - name: PV3 Current
+        alt: DC3 Current
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [114]  # Address 114: Dc current 3
+        icon: "mdi:solar-power-variant"
+
+      - name: PV3 Power
+        alt: DC3 Power
+        class: "power"
+        state_class: "measurement"
+        uom: "W"
+        rule: 1
+        registers: [188]  # Address 188: PV3 input power
+        icon: "mdi:solar-power-variant"
+
+      - name: PV4 Voltage
+        alt: DC4 Voltage
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.1
+        rule: 1
+        registers: [115]  # Address 115: Dc voltage 4
+        icon: "mdi:solar-power-variant"
+
+      - name: PV4 Current
+        alt: DC4 Current
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [116]  # Address 116: Dc current 4
+        icon: "mdi:solar-power-variant"
+
+      - name: PV4 Power
+        alt: DC4 Power
+        class: "power"
+        state_class: "measurement"
+        uom: "W"
+        rule: 1
+        registers: [189]  # Address 189: PV4 input power
+        icon: "mdi:solar-power-variant"
+
+  - group: AC
+    update_interval: 5
+    items:
+      - name: Grid Voltage
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.1
+        rule: 1
+        registers: [73]  # Address 073: Grid voltage A (String inverter)
+
+      - name: Grid Current
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [76]  # Address 076: Grid current A (String inverter)
+
+      - name: Grid Frequency
+        class: "frequency"
+        state_class: "measurement"
+        uom: "Hz"
+        scale: 0.01
+        rule: 2
+        registers: [79]  # Address 079: Grid frequency
+
+      - name: "Load Power"
+        class: "power"
+        state_class: "measurement"
+        uom: "W"
+        scale: 0.1
+        rule: 2
+        registers: [86, 87]  # Address 086-087: Output active power (low/high word)
+
+  - group: Battery
+    update_interval: 5
+    items:
+      - name: "Battery SOC"
+        class: "battery"
+        state_class: "measurement"
+        uom: "%"
+        rule: 1
+        registers: [184]  # Address 184: battery capacity
+        icon: mdi:home-battery
+
+      - name: "Battery Temperature"
+        class: "temperature"
+        state_class: "measurement"
+        uom: "°C"
+        scale: 0.1
+        rule: 1
+        registers: [182]  # Address 182: battery temperature
+        icon: mdi:thermometer
+
+      - name: "Battery Voltage"
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.01
+        rule: 1
+        registers: [183]  # Address 183: battery voltage
+        icon: mdi:flash
+
+      - name: "Battery Current"
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.01
+        rule: 1
+        registers: [191]  # Address 191: Battery output current
+        icon: mdi:flash
+
+      - name: "Battery Power"
+        class: "power"
+        state_class: "measurement"
+        uom: "W"
+        rule: 1
+        registers: [190]  # Address 190: Battery output power
+        icon: mdi:battery
+
+  - group: Settings
+    update_interval: 300
+    items:
+      - name: "Energy Pattern"
+        platform: "select"
+        rule: 1
+        registers: [243]  # Address 243: Energy management model
+        icon: mdi:battery-sync
+        lookup:
+          - key: 0
+            value: "Battery"
+          - key: 1
+            value: "Load"
+            
+      - name: "Battery Control Mode"
+        platform: "select"
+        rule: 1
+        registers: [200]  # Address 200: Control Mode
+        icon: "mdi:battery"
+        lookup:
+          - key: 0x0000
+            value: "Lead-Battery"
+          - key: 0x0001
+            value: "Lithium"
+
+  - group: Info
+    update_interval: 3600
+    items:
+      - name: "Device Type"
+        rule: 1
+        registers: [0]  # Address 000: Device type
+        lookup:
+          - key: 0x0200
+            value: "String Inverter"
+          - key: 0x0300
+            value: "Hybrid Inverter"
+          - key: 0x0400
+            value: "Microinverter"
+
+      - name: "Serial Number"
+        rule: 2
+        registers: [3, 4, 5, 6, 7]  # Address 003-007: SN bytes
+
+      - name: "Firmware Version"
+        rule: 1
+        registers: [13]  # Address 013: Firmware version of control board
+
+  - group: Energy
+    update_interval: 30
+    items:
+      - name: "Today PV Production"
+        alt: Daily Production
+        friendly_name: Today's PV Production
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [108]  # Address 108: Day PV PowerWh
+        icon: "mdi:solar-power"
+
+      - name: "Total PV Production"
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [96, 97]  # Address 096-097: historyPV PowerWh (low/high word)
+        icon: "mdi:solar-power"
+
+      - name: "Today Battery Charge"
+        alt: "Battery Daily Charging Energy"
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [70]  # Address 070: - Day_Batt_Charge_PowerWh (Hybird)
+        icon: "mdi:battery-plus"
+
+      - name: "Total Battery Charge"
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [72, 73]  # Address 072-073: tatol_Batt_charge_PowerWh (low/high word)
+        icon: "mdi:battery-plus"
+
+      - name: "Today Battery Discharge"
+        alt: "Battery Daily Discharging Energy"
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [71]  # Address 071: - Day_Batt_Discharge_PowerWh (Hybird)
+        icon: "mdi:battery-minus"
+
+      - name: "Total Battery Discharge"
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [74, 75]  # Address 074-075: tatol_Batt_Discharge_PowerWh (low/high word)
+        icon: "mdi:battery-minus"
+
+      - name: "Today Load Consumption"
+        alt: Daily Load Consumption
+        friendly_name: Today's Energy Consumption
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [84]  # Address 084: SG:Day_Load_Power Wh (Hybird)
+        icon: "mdi:home-lightning-bolt"
+
+      - name: "Total Load Consumption"
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [85, 86]  # Address 085-086: Total_Load_Power Wh (low/high word)
+        icon: "mdi:home-lightning-bolt"
+
+      - name: "Today Energy Export"
+        alt: Daily Energy Sold
+        description: Today's energy exported/returned to the grid
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [77]  # Address 077: Day_GridSell_Power Wh (Hybird)
+        icon: mdi:transmission-tower-import
+
+      - name: "Total Energy Export"
+        alt: Total Energy Sold
+        description: Total energy exported/returned to the grid
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [98, 99]  # Address 098-099: Year_GridSell_Power Wh (low/high word)
+        icon: mdi:transmission-tower-import
+
+      - name: "Today Energy Import"
+        alt: Daily Energy Bought
+        friendly_name: Today's Energy Import
+        description: Today's energy imported from the grid
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [76]  # Address 076: Day_GridBuy_Power Wh (Hybird)
+        icon: mdi:transmission-tower-export
+
+      - name: "Total Energy Import"
+        alt: Total Energy Bought
+        description: Total energy imported from the grid
+        class: "energy"
+        state_class: "total_increasing"
+        uom: "kWh"
+        scale: 0.1
+        rule: 2
+        registers: [80, 81]  # Address 080-081: Total_GridBuy_Power Wh (low/high word)
+        icon: mdi:transmission-tower-export
