@@ -59,7 +59,7 @@ parameters:
         uom: "W"
         scale: .1
         rule: 2
-        registers: [340, 339]
+        registers: [82, 83]
         icon: "mdi:solar-power-variant"
 
       - name: PV1 Voltage
@@ -187,7 +187,7 @@ parameters:
         uom: "V"
         scale: .1
         rule: 1
-        registers: [29]
+        registers: [67]
 
       - name: Grid Current
         class: "current"
@@ -195,7 +195,7 @@ parameters:
         uom: "A"
         scale: .1
         rule: 1
-        registers: [30]
+        registers: [76]
 
       - name: Grid Frequency
         class: "frequency"
@@ -203,7 +203,7 @@ parameters:
         uom: "Hz"
         scale: .01
         rule: 2
-        registers: [56]
+        registers: [79]
 
       - name: "Load Power"
         class: "power"
@@ -211,7 +211,7 @@ parameters:
         uom: "W"
         scale: .1
         rule: 2
-        registers: [77, 76]
+        registers: [87, 86]
 
   - group: Battery
     update_interval: 5
