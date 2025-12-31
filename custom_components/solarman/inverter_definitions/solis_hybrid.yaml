@@ -1,96 +1,104 @@
-#
-# Power Master / Hinen 6.0K-SL
-# Device Code: 3501
-# Solarman protocol lookup
-#
-
 info:
   manufacturer: Power Master
   model: 6.0K-SL
+  device_code: 3501
+  phase: single
+  type: hybrid
 
 default:
-  update_interval: 30
-  code: 0x03
+  update_interval: 10
+  code: 0x04
   digits: 2
 
 parameters:
 
-  - group: AC
-    update_interval: 5
-    items:
-      - name: Grid Voltage
-        class: "voltage"
-        state_class: "measurement"
-        uom: "V"
-        scale: 0.1
-        rule: 1
-        registers: [67]
-
-      - name: Grid Frequency
-        class: "frequency"
-        state_class: "measurement"
-        uom: "Hz"
-        scale: 0.01
-        rule: 1
-        registers: [89]
-
   - group: Battery
     update_interval: 5
     items:
+
       - name: Battery SOC
-        class: "battery"
-        state_class: "measurement"
+        class: battery
         uom: "%"
         rule: 1
-        registers: [96]
-        icon: mdi:home-battery
+        registers: [87]
+        icon: mdi:battery
 
       - name: Battery Voltage
-        class: "voltage"
-        state_class: "measurement"
-        uom: "V"
-        scale: 0.1
+        class: voltage
+        uom: V
+        scale: 0.11
         rule: 1
         registers: [99]
-        icon: mdi:flash
 
       - name: Battery Current
-        class: "current"
-        state_class: "measurement"
-        uom: "A"
+        class: current
+        uom: A
+        scale: 0.01
+        rule: 1
+        registers: [96]
+
+      - name: Battery Temperature
+        class: temperature
+        uom: °C
+        rule: 1
+        registers: [107]
+
+  - group: Grid
+    update_interval: 5
+    items:
+
+      - name: Grid Voltage
+        class: voltage
+        uom: V
+        scale: 0.05
+        rule: 1
+        registers: [67]
+
+      - name: Grid Current
+        class: current
+        uom: A
+        scale: 0.002
+        rule: 1
+        registers: [161]
+
+      - name: Grid Frequency
+        class: frequency
+        uom: Hz
+        scale: 0.01
+        rule: 1
+        registers: [79]
+
+      - name: Grid Power
+        class: power
+        uom: W
         scale: 0.1
         rule: 1
-        registers: [87]
-        icon: mdi:current-dc
+        registers: [71]
 
   - group: PV
     update_interval: 5
     items:
+
       - name: PV Voltage
-        class: "voltage"
-        state_class: "measurement"
-        uom: "V"
+        class: voltage
+        uom: V
         scale: 0.1
         rule: 1
         registers: [101]
-        icon: mdi:solar-power
 
       - name: PV Power
-        class: "power"
-        state_class: "measurement"
-        uom: "W"
-        scale: 0.1
-        rule: 1
-        registers: [124]
-        icon: mdi:solar-power
+        class: power
+        uom: W
+        rule: 2
+        registers: [53, 52]
 
   - group: Load
     update_interval: 5
     items:
+
       - name: Load Power
-        class: "power"
-        state_class: "measurement"
-        uom: "W"
+        class: power
+        uom: W
+        scale: 0.2
         rule: 1
-        registers: [75]
-        icon: mdi:home-lightning-bolt
+        registers: [152]
