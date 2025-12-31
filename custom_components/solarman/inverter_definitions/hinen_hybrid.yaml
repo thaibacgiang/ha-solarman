@@ -211,7 +211,7 @@ parameters:
         uom: "W"
         scale: .1
         rule: 2
-        registers: [80, 81]
+        registers: [81, 80]
 
   - group: Battery
     update_interval: 5
