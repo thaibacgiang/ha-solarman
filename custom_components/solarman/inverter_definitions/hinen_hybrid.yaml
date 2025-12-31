@@ -247,7 +247,7 @@ parameters:
         uom: "V"
         scale: .1
         rule: 1
-        registers: [127]
+        registers: [183]
         icon: mdi:flash
 
       - name: "Battery Discharge Power"
