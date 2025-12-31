@@ -195,7 +195,7 @@ parameters:
         uom: "A"
         scale: .1
         rule: 1
-        registers: [76]
+        registers: [77]
 
       - name: Grid Frequency
         class: "frequency"
@@ -211,7 +211,7 @@ parameters:
         uom: "W"
         scale: .1
         rule: 2
-        registers: [87, 86]
+        registers: [80, 81]
 
   - group: Battery
     update_interval: 5
