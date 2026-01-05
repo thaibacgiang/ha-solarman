@@ -35,12 +35,12 @@ parameters:
           - key: 7
             value: "Bypass"
 
-      - name: "Temperature"
+      - name: "Inverter Temperature"
         class: "temperature"
         state_class: "measurement"
         uom: "°C"
         scale: 0.1
-        rule: 2
+        rule: 1
         registers: [132]
         icon: "mdi:thermometer"
 
@@ -54,17 +54,8 @@ parameters:
         uom: "V"
         scale: 0.1
         rule: 1
-        registers: [67]           # ✓ Điện áp lưới
+        registers: [67]           # ✓ Điện áp lưới chính xác
         icon: "mdi:transmission-tower"
-
-      - name: "Grid Frequency"
-        class: "frequency"
-        state_class: "measurement"
-        uom: "Hz"
-        scale: 0.01
-        rule: 2
-        registers: [79]           # ✓ Tần số lưới
-        icon: "mdi:sine-wave"
 
       - name: "Grid Current"
         class: "current"
@@ -72,15 +63,24 @@ parameters:
         uom: "A"
         scale: 0.1
         rule: 1
-        registers: [30]
+        registers: [68]
         icon: "mdi:current-ac"
+
+      - name: "Grid Frequency"
+        class: "frequency"
+        state_class: "measurement"
+        uom: "Hz"
+        scale: 0.01
+        rule: 1
+        registers: [79]           # ✓ Tần số lưới chính xác
+        icon: "mdi:sine-wave"
 
       - name: "Grid Power"
         class: "power"
         state_class: "measurement"
         uom: "W"
         rule: 1
-        registers: [77, 76]
+        registers: [169]
         icon: "mdi:transmission-tower"
 
   # ===== LOAD =====
@@ -91,17 +91,34 @@ parameters:
         class: "power"
         state_class: "measurement"
         uom: "W"
-        scale: 0.1
-        rule: 2
-        registers: [77, 76]
+        rule: 1
+        registers: [178]
         icon: "mdi:home-lightning-bolt"
+
+      - name: "Load Voltage"
+        class: "voltage"
+        state_class: "measurement"
+        uom: "V"
+        scale: 0.1
+        rule: 1
+        registers: [154]
+        icon: "mdi:home-lightning-bolt"
+
+      - name: "Load Current"
+        class: "current"
+        state_class: "measurement"
+        uom: "A"
+        scale: 0.1
+        rule: 1
+        registers: [164]
+        icon: "mdi:current-ac"
 
       - name: "Load Frequency"
         class: "frequency"
         state_class: "measurement"
         uom: "Hz"
         scale: 0.01
-        rule: 2
+        rule: 1
         registers: [192]
         icon: "mdi:sine-wave"
 
@@ -109,13 +126,12 @@ parameters:
   - group: PV
     update_interval: 5
     items:
-      - name: "PV Power"
+      - name: "PV Total Power"
         class: "power"
         state_class: "measurement"
         uom: "W"
-        scale: 0.1
-        rule: 2
-        registers: [340, 339]
+        rule: 1
+        registers: [186]          # PV1 Power + PV2 Power
         icon: "mdi:solar-power-variant"
 
       - name: "PV1 Voltage"
@@ -124,7 +140,7 @@ parameters:
         uom: "V"
         scale: 0.1
         rule: 1
-        registers: [3]
+        registers: [109]
         icon: "mdi:solar-power-variant"
 
       - name: "PV1 Current"
@@ -133,7 +149,7 @@ parameters:
         uom: "A"
         scale: 0.1
         rule: 1
-        registers: [4]
+        registers: [110]
         icon: "mdi:solar-power-variant"
 
       - name: "PV1 Power"
@@ -141,7 +157,7 @@ parameters:
         state_class: "measurement"
         uom: "W"
         rule: 1
-        registers: [7, 6]
+        registers: [186]
         icon: "mdi:solar-power-variant"
 
       - name: "PV2 Voltage"
@@ -150,7 +166,7 @@ parameters:
         uom: "V"
         scale: 0.1
         rule: 1
-        registers: [8]
+        registers: [111]
         icon: "mdi:solar-power-variant"
 
       - name: "PV2 Current"
@@ -159,7 +175,7 @@ parameters:
         uom: "A"
         scale: 0.1
         rule: 1
-        registers: [9]
+        registers: [112]
         icon: "mdi:solar-power-variant"
 
       - name: "PV2 Power"
@@ -167,7 +183,7 @@ parameters:
         state_class: "measurement"
         uom: "W"
         rule: 1
-        registers: [12, 11]
+        registers: [187]
         icon: "mdi:solar-power-variant"
 
   # ===== BATTERY =====
@@ -178,27 +194,26 @@ parameters:
         class: "voltage"
         state_class: "measurement"
         uom: "V"
-        scale: 0.1
+        scale: 0.01
         rule: 1
-        registers: [127]
+        registers: [183]
         icon: "mdi:flash"
 
       - name: "Battery Current"
         class: "current"
         state_class: "measurement"
         uom: "A"
-        scale: 0.1
-        rule: 2
-        registers: [105, 104]
+        scale: 0.01
+        rule: 1
+        registers: [191]
         icon: "mdi:current-dc"
 
       - name: "Battery Power"
         class: "power"
         state_class: "measurement"
         uom: "W"
-        scale: 0.1
-        rule: 2
-        registers: [105, 104]
+        rule: 1
+        registers: [190]
         icon: "mdi:battery"
 
       - name: "Battery SOC"
@@ -215,34 +230,8 @@ parameters:
         uom: "°C"
         scale: 0.1
         rule: 1
-        registers: [136]
+        registers: [182]
         icon: "mdi:thermometer"
-
-      - name: "Battery SoH"
-        description: "Battery State of Health"
-        state_class: "measurement"
-        uom: "%"
-        rule: 1
-        registers: [174]
-        icon: "mdi:battery-heart"
-
-      - name: "Battery Charge Power"
-        class: "power"
-        state_class: "measurement"
-        uom: "W"
-        scale: 0.1
-        rule: 2
-        registers: [105, 104]
-        icon: "mdi:battery-plus"
-
-      - name: "Battery Discharge Power"
-        class: "power"
-        state_class: "measurement"
-        uom: "W"
-        scale: 0.1
-        rule: 2
-        registers: [103, 102]
-        icon: "mdi:battery-minus"
 
   # ===== INVERTER =====
   - group: Inverter
@@ -261,7 +250,7 @@ parameters:
         class: "current"
         state_class: "measurement"
         uom: "A"
-        scale: 0.1
+        scale: 0.01
         rule: 1
         registers: [164]
         icon: "mdi:current-ac"
@@ -279,7 +268,7 @@ parameters:
         state_class: "measurement"
         uom: "Hz"
         scale: 0.01
-        rule: 2
+        rule: 1
         registers: [193]
         icon: "mdi:sine-wave"
 
@@ -287,40 +276,40 @@ parameters:
   - group: Energy
     update_interval: 30
     items:
-      - name: "Today Production"
+      - name: "Today PV Energy"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [273, 272]
+        rule: 1
+        registers: [108]
         icon: "mdi:solar-power"
 
-      - name: "Total Production"
+      - name: "Total PV Energy"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
         rule: 2
-        registers: [275, 274]
+        registers: [96]
         icon: "mdi:solar-power"
 
-      - name: "Today Load Consumption"
+      - name: "Today Load Energy"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [301, 300]
+        rule: 1
+        registers: [84]
         icon: "mdi:home-lightning-bolt"
 
-      - name: "Total Load Consumption"
+      - name: "Total Load Energy"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
         rule: 2
-        registers: [303, 302]
+        registers: [85]
         icon: "mdi:home-lightning-bolt"
 
       - name: "Today Battery Charge"
@@ -328,8 +317,8 @@ parameters:
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [277, 276]
+        rule: 1
+        registers: [70]
         icon: "mdi:battery-plus"
 
       - name: "Total Battery Charge"
@@ -338,7 +327,7 @@ parameters:
         uom: "kWh"
         scale: 0.1
         rule: 2
-        registers: [279, 278]
+        registers: [72]
         icon: "mdi:battery-plus"
 
       - name: "Today Battery Discharge"
@@ -346,8 +335,8 @@ parameters:
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [281, 280]
+        rule: 1
+        registers: [71]
         icon: "mdi:battery-minus"
 
       - name: "Total Battery Discharge"
@@ -356,43 +345,43 @@ parameters:
         uom: "kWh"
         scale: 0.1
         rule: 2
-        registers: [283, 282]
+        registers: [74]
         icon: "mdi:battery-minus"
 
-      - name: "Today Energy Import"
+      - name: "Today Grid Import"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [309, 308]
+        rule: 1
+        registers: [76]
         icon: "mdi:transmission-tower-import"
 
-      - name: "Total Energy Import"
+      - name: "Total Grid Import"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [311, 310]
+        rule: 1
+        registers: [78]
         icon: "mdi:transmission-tower-import"
 
-      - name: "Today Energy Export"
+      - name: "Today Grid Export"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [305, 304]
+        rule: 1
+        registers: [77]
         icon: "mdi:transmission-tower-export"
 
-      - name: "Total Energy Export"
+      - name: "Total Grid Export"
         class: "energy"
         state_class: "total_increasing"
         uom: "kWh"
         scale: 0.1
-        rule: 2
-        registers: [307, 306]
+        rule: 1
+        registers: [81]
         icon: "mdi:transmission-tower-export"
 
   # ===== SETTINGS =====
@@ -423,11 +412,22 @@ parameters:
           - key: 0x0001
             value: "Lithium"
 
-  # ===== INFO =====
-  - group: Info
-    update_interval: 3600
-    items:
-      - name: "Battery Software Version"
+      - name: "Max Battery Charge Current"
+        platform: "number"
         rule: 1
-        registers: [170]
-        icon: "mdi:information"
+        registers: [210]
+        uom: "A"
+        min: 0
+        max: 185
+        step: 5
+        icon: "mdi:battery-charging"
+
+      - name: "Max Battery Discharge Current"
+        platform: "number"
+        rule: 1
+        registers: [211]
+        uom: "A"
+        min: 0
+        max: 185
+        step: 5
+        icon: "mdi:battery-minus"
