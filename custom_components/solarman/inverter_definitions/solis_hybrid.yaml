@@ -260,7 +260,7 @@ parameters:
         state_class: "measurement"
         uom: "W"
         rule: 1
-        registers: [77, 76]
+        registers: [76, 77]
         icon: "mdi:transmission-tower"
 
   ###############################################
@@ -275,7 +275,7 @@ parameters:
         uom: "W"
         scale: 0.1
         rule: 2
-        registers: [77, 76]
+        registers: [76, 77]
         icon: "mdi:home-lightning-bolt"
 
   ###############################################
